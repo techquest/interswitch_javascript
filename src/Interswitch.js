@@ -10,9 +10,9 @@ class HttpConfigurationError extends Error {
 }
 //Please uncomment import statement in JS before taking via babel as TS
 //won't generate the ES6 import as Node doesn't understand this
-//import getHeader from "./auth";
-//import axios from "axios";
-//import SecureManager from "./lib/secure"
+import getHeader from "./auth";
+import axios from "axios";
+import SecureManager from "./lib/secure"
 export default class Interswitch {
     constructor(clientid, secret) {
         this.clientid = clientid;
@@ -61,6 +61,23 @@ export default class Interswitch {
         if (method === null || method === undefined || method === "") {
             throw new HttpConfigurationError('HTTP Verb must be defined, please check your method type');
         }
+        let RequestParameter = {
+            url: url,
+            method: method,
+            secret: this.clientSecret,
+            clientId: this.clientid,
+            extraData: signedParameters
+        };
+        //Generate the Interswitch header
+        let headerData = getHeader(RequestParameter, httpHeaders, false);
+        //Create the Axios Request data
+        let AxiosData = {
+            method: RequestParameter.method,
+            url: RequestParameter.url,
+            data: data,
+            headers: headerData
+        };
+        return axios(AxiosData, httpHeaders);
     }
     /**
      * Generates the AuthData

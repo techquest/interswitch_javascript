@@ -1,10 +1,14 @@
-declare var SecureManager;
+declare var SecureManager,axios,getHeader;
 interface InterswitchEnvironment {
     ENV_SANDBOX: String;
     ENV_PRODUCTION: String;
 
 }
 
+/**
+ * Contract interface for AuthData 
+ * @interface SecureAuthOptions
+ */
 interface SecureAuthOptions{
     publicKeyModulus:String;
     publicKeyExponent:String;
@@ -13,6 +17,30 @@ interface SecureAuthOptions{
     cvv:String;
     pin:String;
 }
+
+
+/**
+ * Generates the Interface as contract for any Interswitch authentication calls 
+ * @interface InterswitchRequestInterface
+ */
+interface InterswitchHeadersAuth{
+    contentType?:String;
+    encryptedMethod?:String;
+    secret:String;
+    clientId:String;
+    accessToken?:String;
+    url:String;
+    extraData?:Array<String>,
+    method:String;
+}
+
+interface AxiosRequestData{
+    method:String;
+    url:String;
+    data:Object,
+    headers:any
+}
+
 
 
 /**
@@ -92,7 +120,7 @@ sendWithAccessToken(url:String,method:String,data:Object,httpHeaders:Object, sig
  * 
  * @memberOf Interswitch
  */
-send(url:String,method:String,data:Object|String, httpHeaders:Object, signedParameters:Array<String>){
+send(url:String,method:String,data:Object|String, httpHeaders:Object, signedParameters:Array<String>):Promise<Object>{
     if(url === null || url === undefined){
         throw new HttpConfigurationError("Url must be specified beofre making the Request");
     }
@@ -100,6 +128,27 @@ send(url:String,method:String,data:Object|String, httpHeaders:Object, signedPara
     if(method === null || method === undefined || method === ""){
         throw new HttpConfigurationError('HTTP Verb must be defined, please check your method type');
     }
+
+    let RequestParameter:InterswitchHeadersAuth={
+        url:url,
+        method:method,
+        secret:this.clientSecret,
+        clientId:this.clientid,
+        extraData:signedParameters
+    }
+    //Generate the Interswitch header
+    let headerData:any = getHeader(RequestParameter,httpHeaders,false);
+    
+    //Create the Axios Request data
+    let AxiosData:AxiosRequestData={
+        method:RequestParameter.method,
+        url:RequestParameter.url,
+        data:data,
+        headers:headerData
+    }
+
+    return axios(AxiosData,httpHeaders);
+    
 
 
 }
