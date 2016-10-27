@@ -1,7 +1,9 @@
-/**
- * Interswitch SDK
- */
-class Interswitch {
+//Please uncomment import statement in JS before taking via babel as TS
+//won't generate the ES6 import as Node doesn't understand this
+import getHeader from "./auth";
+import axios from "axios";
+import SecureManager from "./lib/secure"
+export default class Interswitch {
     constructor(clientid, secret) {
         this.clientid = clientid;
         this.clientSecret = secret;
@@ -15,7 +17,11 @@ class Interswitch {
         };
     }
     /**
-     * Sets the Environment
+     * Sets the Environment for the Request
+     *
+     * @param {String} environmentMode
+     *
+     * @memberOf Interswitch
      */
     setEnvironment(environmentMode) {
         if (environmentMode === this.InterswitchEnv.ENV_SANDBOX) {
@@ -25,8 +31,43 @@ class Interswitch {
             this.environment = this.InterswitchEnv.ENV_PRODUCTION;
         }
     }
-    sendWithAccessToken(url, method, datam = httpHeaders, signedParameters) {
+    sendWithAccessToken(url, method, data, httpHeaders, signedParameters) {
     }
-    send(url, method, datam = httpHeaders, signedParameters) {
+    /**
+     * This sends an HTTP Request to the url resource
+     *
+     * @param {String} url
+     * @param {String} method
+     * @param {Object} data
+     * @param {Object} httpHeaders
+     * @param {Array<String>} signedParameters
+     *
+     * @memberOf Interswitch
+     */
+    send(url, method, data, httpHeaders, signedParameters) {
+    }
+    /**
+     * Generates the AuthData
+     *
+     * @param {String} publicExponent
+     * @param {String} publicModulus
+     * @param {String} pan
+     * @param {String} expDate
+     * @param {String} cvv
+     * @param {any} pinString
+     * @returns AuthData String
+     *
+     * @memberOf Interswitch
+     */
+    getAuthData(publicExponent, publicModulus, pan, expDate, cvv, pinString) {
+        let SecureAuthData = {
+            publicKeyModulus: publicModulus,
+            publicKeyExponent: publicExponent,
+            card: pan,
+            exp: expDate,
+            cvv: cvv,
+            pin: pinString
+        };
+        return SecureManager.getAuthData2(SecureAuthData);
     }
 }

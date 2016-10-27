@@ -1,15 +1,26 @@
-/**
- * Interswitch SDK 
- */
-
+declare var SecureManager;
 interface InterswitchEnvironment {
     ENV_SANDBOX: String;
     ENV_PRODUCTION: String;
 
 }
 
+interface SecureAuthOptions{
+    publicKeyModulus:String;
+    publicKeyExponent:String;
+    card:String;
+    exp:String;
+    cvv:String;
+    pin:String;
+}
+//Please uncomment import statement in JS before taking via babel as TS
+//won't generate the ES6 import as Node doesn't understand this
 
-class Interswitch {
+
+//import getHeader from "./auth";
+//import axios from "axios";
+//import SecureManager from "./lib/secure"
+export default class Interswitch {
     clientid: String;
     clientSecret: String;
     environment: String;
@@ -32,8 +43,13 @@ class Interswitch {
         }
 
     }
+    
     /**
-     * Sets the Environment 
+     * Sets the Environment for the Request
+     * 
+     * @param {String} environmentMode
+     * 
+     * @memberOf Interswitch
      */
     setEnvironment(environmentMode: String) {
         if (environmentMode === this.InterswitchEnv.ENV_SANDBOX) {
@@ -45,12 +61,51 @@ class Interswitch {
     }
 
 
-sendWithAccessToken(url,method,datam httpHeaders, signedParameters){
+sendWithAccessToken(url:String,method:String,data:Object,httpHeaders:Object, signedParameters:Array<String>){
 
-}   
-send(url,method,datam httpHeaders, signedParameters){
+}
+
+   
+/**
+ * This sends an HTTP Request to the url resource
+ * 
+ * @param {String} url
+ * @param {String} method
+ * @param {Object} data
+ * @param {Object} httpHeaders
+ * @param {Array<String>} signedParameters
+ * 
+ * @memberOf Interswitch
+ */
+send(url:String,method:String,data:Object, httpHeaders:Object, signedParameters:Array<String>){
     
-}   
+}
+
+/**
+ * Generates the AuthData
+ * 
+ * @param {String} publicExponent
+ * @param {String} publicModulus
+ * @param {String} pan
+ * @param {String} expDate
+ * @param {String} cvv
+ * @param {any} pinString
+ * @returns AuthData String
+ * 
+ * @memberOf Interswitch
+ */
+getAuthData(publicExponent:String, publicModulus:String, pan:String, expDate:String, cvv:String, pinString){
+    let SecureAuthData:SecureAuthOptions={
+        publicKeyModulus:publicModulus,
+        publicKeyExponent:publicExponent,
+        card:pan,
+        exp:expDate,
+        cvv:cvv,
+        pin:pinString
+    }
+
+    return SecureManager.getAuthData2(SecureAuthData);
+}  
     
 
 
