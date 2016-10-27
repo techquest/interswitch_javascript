@@ -13,6 +13,18 @@ interface SecureAuthOptions{
     cvv:String;
     pin:String;
 }
+
+
+/**
+ * This extends the RequestError  
+ * @class RequestError
+ * @extends {Error}
+ */
+class HttpConfigurationError extends Error{
+    constructor(message){
+        super(message);
+    }
+}
 //Please uncomment import statement in JS before taking via babel as TS
 //won't generate the ES6 import as Node doesn't understand this
 
@@ -28,6 +40,7 @@ export default class Interswitch {
     serviceUrl: Object;
     InterswitchEnv: InterswitchEnvironment;
     InterswitchUrl: Object;
+    resourceUri:String;
 
     constructor(clientid: String, secret: String) {
         this.clientid = clientid;
@@ -65,6 +78,8 @@ sendWithAccessToken(url:String,method:String,data:Object,httpHeaders:Object, sig
 
 }
 
+
+
    
 /**
  * This sends an HTTP Request to the url resource
@@ -77,8 +92,16 @@ sendWithAccessToken(url:String,method:String,data:Object,httpHeaders:Object, sig
  * 
  * @memberOf Interswitch
  */
-send(url:String,method:String,data:Object, httpHeaders:Object, signedParameters:Array<String>){
-    
+send(url:String,method:String,data:Object|String, httpHeaders:Object, signedParameters:Array<String>){
+    if(url === null || url === undefined){
+        throw new HttpConfigurationError("Url must be specified beofre making the Request");
+    }
+
+    if(method === null || method === undefined || method === ""){
+        throw new HttpConfigurationError('HTTP Verb must be defined, please check your method type');
+    }
+
+
 }
 
 /**
@@ -94,7 +117,7 @@ send(url:String,method:String,data:Object, httpHeaders:Object, signedParameters:
  * 
  * @memberOf Interswitch
  */
-getAuthData(publicExponent:String, publicModulus:String, pan:String, expDate:String, cvv:String, pinString){
+getAuthData(publicModulus:String,publicExponent:String,  pan:String, expDate:String, cvv:String, pinString){
     let SecureAuthData:SecureAuthOptions={
         publicKeyModulus:publicModulus,
         publicKeyExponent:publicExponent,
@@ -104,7 +127,7 @@ getAuthData(publicExponent:String, publicModulus:String, pan:String, expDate:Str
         pin:pinString
     }
 
-    return SecureManager.getAuthData2(SecureAuthData);
+    return SecureManager.authData2(SecureAuthData);
 }  
     
 

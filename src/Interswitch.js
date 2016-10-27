@@ -1,8 +1,18 @@
+/**
+ * This extends the RequestError
+ * @class RequestError
+ * @extends {Error}
+ */
+class HttpConfigurationError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
 //Please uncomment import statement in JS before taking via babel as TS
 //won't generate the ES6 import as Node doesn't understand this
-import getHeader from "./auth";
-import axios from "axios";
-import SecureManager from "./lib/secure"
+//import getHeader from "./auth";
+//import axios from "axios";
+//import SecureManager from "./lib/secure"
 export default class Interswitch {
     constructor(clientid, secret) {
         this.clientid = clientid;
@@ -45,6 +55,12 @@ export default class Interswitch {
      * @memberOf Interswitch
      */
     send(url, method, data, httpHeaders, signedParameters) {
+        if (url === null || url === undefined) {
+            throw new HttpConfigurationError("Url must be specified beofre making the Request");
+        }
+        if (method === null || method === undefined || method === "") {
+            throw new HttpConfigurationError('HTTP Verb must be defined, please check your method type');
+        }
     }
     /**
      * Generates the AuthData
@@ -59,7 +75,7 @@ export default class Interswitch {
      *
      * @memberOf Interswitch
      */
-    getAuthData(publicExponent, publicModulus, pan, expDate, cvv, pinString) {
+    getAuthData(publicModulus, publicExponent, pan, expDate, cvv, pinString) {
         let SecureAuthData = {
             publicKeyModulus: publicModulus,
             publicKeyExponent: publicExponent,
@@ -68,6 +84,6 @@ export default class Interswitch {
             cvv: cvv,
             pin: pinString
         };
-        return SecureManager.getAuthData2(SecureAuthData);
+        return SecureManager.authData2(SecureAuthData);
     }
 }
