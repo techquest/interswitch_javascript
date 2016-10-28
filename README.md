@@ -22,4 +22,10 @@ callback.then(SuccessCallback,ErrorCallback);
 
 ```
 
+Generating AuthData
+
+Arguments(cardpan,expdate,cvv,pin)
+```javascript
+var authData=InterswitchClient.getAuthData("5061020000000000011","1801","350","1111");
+```
 
