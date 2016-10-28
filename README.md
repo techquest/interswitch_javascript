@@ -26,6 +26,45 @@ Generating AuthData
 
 Arguments(cardpan,expdate,cvv,pin)
 ```javascript
-var authData=InterswitchClient.getAuthData("5061020000000000011","1801","350","1111");
+var authData=InterswitchClient.getAuthData(CARD_PAN,EXPIRY_DATE,CVV,PIN);
 ```
 
+Making Payment API Calls
+
+# After Getting the user details
+```javascript
+var PurchaseData = {
+                "customerId":CUSTOMER_ID_OR_MOBILE,
+                "amount": AMOUNT,
+                "transactionRef": "ESBDEV"+(Math.random() * 1000),
+                "currency": "NGN",
+                "authData": authData,
+                "merchantCode": "MX187", //MERCHANT
+                "payableId": "2324" //ITEM
+    };
+```
+# Making the Call
+```javascript
+try{
+        var callback=InterswitchClient.send("api/v2/purchases","POST", PurchaseData, {}, null);
+    callback.then(function(response){
+        if (response.data.responseCode === "T0") {
+                    //this.state = this.scenario.OTP;
+                    //OTP PHASE
+            var OTPData = {
+            //"authData": this.authData, NO COMPULSORY
+            "paymentId": response.data.paymentId,
+            "otp": "645001"
+            };
+
+            var callback=InterswitchClient.send("api/v2/purchases/otps/auths","POST", OTPData, {}, null);
+        }
+    })
+    .catch( function(error){
+        console.log(error);
+    });
+    }
+    catch(e){
+        console.log(e);
+    }    
+```
