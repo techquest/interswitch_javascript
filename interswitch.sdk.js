@@ -135,7 +135,7 @@
 	            PRODUCTION_BASE_URL: "https://saturn.interswitchng.com/",
 	            //SANDBOX_BASE_URL: "http://172.35.2.6:7073/",
 	            //SANDBOX_BASE_URL: "http://172.35.2.30:19081/",
-	            SANDBOX_BASE_URL: "https://sandbox.interswitch.ng/",
+	            SANDBOX_BASE_URL: "https://sandbox.interswitchng.com/",
 	            //SANDBOX_BASE_URL: "https://sandbox.interswitchng.com/",
 	            //DEMO_PASSPORT_BASE_URL: "http://172.35.2.6:7073",
 	            PRODUCTION_PASSPORT_BASE_URL: "https://saturn.interswitchng.com",
@@ -273,7 +273,7 @@
 
 	    }, {
 	        key: "sendWithAccessToken",
-	        value: function sendWithAccessToken(url, method, data, httpHeaders, signedParameters) {
+	        value: function sendWithAccessToken(url, method, data, accessToken, httpHeaders, signedParameters) {
 	            if (url === null || url === undefined) {
 	                throw new HttpConfigurationError("Url must be specified beofre making the Request");
 	            }
@@ -288,12 +288,23 @@
 	                clientId: this.clientid,
 	                extraData: signedParameters
 	            };
-	            //Generate the Interswitch header
-	            var headerData = (0, _auth2.default)(RequestParameter, httpHeaders, false);
+	            this.accessToken = accessToken;
+	            //make the Call to Original Request Url
+	            var OriginalRequestParameter = {
+	                url: url,
+	                method: method,
+	                clientId: this.clientid,
+	                secret: this.clientSecret,
+	                contentType: "application/json",
+	                extraData: null,
+	                encryptedMethod: "SHA1",
+	                accessToken: this.getAccessToken()
+	            };
+	            var headerData = (0, _auth2.default)(OriginalRequestParameter, httpHeaders, false);
 	            //Create the Axios Request data
 	            var AxiosData = {
-	                method: RequestParameter.method,
-	                url: RequestParameter.url,
+	                method: OriginalRequestParameter.method,
+	                url: OriginalRequestParameter.url,
 	                data: data,
 	                headers: headerData
 	            };
