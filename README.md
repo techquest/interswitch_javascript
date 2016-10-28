@@ -1,4 +1,8 @@
 # Interswitch SDK JavaScript
+SAMPLE CLIENTID/secret
+
+IKIAC168FB93E4D021D50F42D66759CF029A94324CE0 -> Client ID
+mtL1t8REuYGcDm7ggpn13kyi9YhXSKPbwhGPgLw/Xg0= -> Secret
 
 Usage
 
