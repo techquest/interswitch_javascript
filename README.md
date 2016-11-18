@@ -1,74 +1,34 @@
-# Interswitch SDK JavaScript
-SAMPLE CLIENTID/secret
+```js
+var Interswitch = require('interswitch')
+var clientId = ""; // Get your Client ID from https://developer.interswitchng.com
+var secret = ""; // Get your Client Secret from https://developer.interswitchng.com
+var ENV = "SANDBOX"; // or PRODUCTION
+var interswitch = new Interswitch(clientId, secret, ENV);
 
-IKIAC168FB93E4D021D50F42D66759CF029A94324CE0 -> Client ID
-mtL1t8REuYGcDm7ggpn13kyi9YhXSKPbwhGPgLw/Xg0= -> Secret
+var handleResponse = function(err, response, responseData)
+{
+   console.log("HTTP Response Code: " + response.statusCode);
+   console.log("Response body: " + responseData);
+}
 
-Usage
-
-Instantitate the Client Class
-```javascript
-var InterswitchClient = new Interswitch(clientId,secret,"SANDBOX");
-
+var httpHeaders = {
+	Content-Type: application/json
+}
+var requestData = "";
+interswitch.send("api/v1/.....", "POST", requestData, httpHeaders, handleResponse);
 ```
 
-or
-```javascript
-var InterswitchClient = new Interswitch(clientId,secret,"PRODUCTION");
+## Installation
 
-```
-Making an API Call
-```javascript
-callback=InterswitchClient.send("api/v1/quickteller/transactions/inquirys","POST",Data,{
-          terminalId:'3APJ0001'
-        },null);
-callback.then(SuccessCallback,ErrorCallback);        
-
+```bash
+$ npm install interswitch
 ```
 
-Generating AuthData
+## Features
 
-Arguments(cardpan,expdate,cvv,pin)
-```javascript
-var authData=InterswitchClient.getAuthData(CARD_PAN,EXPIRY_DATE,CVV,PIN);
-```
-
-Making Payment API Calls
-
-# After Getting the user details
-```javascript
-var PurchaseData = {
-                "customerId":CUSTOMER_ID_OR_MOBILE,
-                "amount": AMOUNT,
-                "transactionRef": "ESBDEV"+(Math.random() * 1000),
-                "currency": "NGN",
-                "authData": authData,
-                "merchantCode": "MX187", //MERCHANT
-                "payableId": "2324" //ITEM
-    };
-```
-# Making the Call
-```javascript
-try{
-        var callback=InterswitchClient.send("api/v2/purchases","POST", PurchaseData, {}, null);
-    callback.then(function(response){
-        if (response.data.responseCode === "T0") {
-                    //this.state = this.scenario.OTP;
-                    //OTP PHASE
-            var OTPData = {
-            //"authData": this.authData, NO COMPULSORY
-            "paymentId": response.data.paymentId,
-            "otp": "645001"
-            };
-
-            var callback=InterswitchClient.send("api/v2/purchases/otps/auths","POST", OTPData, {}, null);
-        }
-    })
-    .catch( function(error){
-        console.log(error);
-    });
-    }
-    catch(e){
-        console.log(e);
-    }    
-```
+  * Sends request to Interswitch API
+  * Calculates Interswitch Security Header
+  * Packages Interswitch Sensitive Data (Card, PIN, CVV, Exp Date)
+  * Generates PIN Block for Interswitch transactions
+  * Generate MAC for Interswitch transactions
+  
