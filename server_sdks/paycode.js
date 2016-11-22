@@ -14,11 +14,11 @@ var clientid = "IKIA9614B82064D632E9B6418DF358A6A4AEA84D7218";
 var secret = "XCTiBtLy1G9chAnyg0z3BcaFK4cVpwDg/GTw2EmjTZ8=";
 var interswitchSDK = new Interswitch(clientid, secret);
 var paycodeSDK = new Paycode(clientid, secret);
+var passportHost = "https://sandbox.interswitchng.com"; // Production - https://saturn.interswitchng.com
 
 var filePath = __dirname + '/public/index.html';
-var redirectUri = "http://41.203.120.54";
-var interswitchPassport = "https://sandbox.interswitchng.com/passport/oauth/authorize?client_id=" + clientid + "&response_type=code&scope=profile&redirect_uri=" + redirectUri;
-
+var redirectUri = "http://{your redirect url}";
+var interswitchPassport = passportHost + "/passport/oauth/authorize?client_id=" + clientid + "&response_type=code&scope=profile&redirect_uri=" + redirectUri;
 
 var ttid = "812";
 //var expDate = "5004";
@@ -57,7 +57,7 @@ server.get('/', function(req, res)
        res.end('Page not found');
        return console.log(err);
       }
-  
+
      var decoded = jwt.decode(accessToken);
      var cookie = 'access_token=' + accessToken + '; expires=' + (new Date(decoded.exp + '000')).toUTCString();
      res.set('Set-Cookie', cookie)
@@ -75,7 +75,7 @@ server.get('/', function(req, res)
   {
     var base64 = new Buffer(clientid + ":" + secret).toString('base64');
     var requestData = {
-      url: 'https://sandbox.interswitchng.com/passport/oauth/token',
+      url: passportHost + '/passport/oauth/token',
       method: 'POST',
       headers: {
        'Authorization': 'Basic ' + base64,
@@ -129,7 +129,7 @@ server.post('/', function(req, res)
      chunk+= data;
    });
 
-   req.on('end', function () 
+   req.on('end', function ()
    {
        var cookie = req.headers['cookie'];
        var accessToken;
@@ -144,7 +144,7 @@ server.post('/', function(req, res)
        if(typeof accessToken === 'undefined')
        {
 	 console.log('Redirecting.....' + interswitchPassport);
-	 res.redirect(interswitchPassport);	 
+	 res.redirect(interswitchPassport);
        }
        else
        {
@@ -154,7 +154,7 @@ server.post('/', function(req, res)
 	   var httpRespCode =  response.statusCode
 	   console.log("Generate Paycode HTTP Resp Code: " + httpRespCode);
 	   console.log("Generate Paycode Resp: " + body);
-	   var json = JSON.parse(body);   
+	   var json = JSON.parse(body);
            Sample.sendResponse(res, httpRespCode, json);
 	 }
 
@@ -177,7 +177,7 @@ server.post('/', function(req, res)
 	    Sample.sendResponse(res, httpRespCode, json);
 	  }
 	 };
-	
+
 	// Get eWallet
 	paycodeSDK.getEWallet(accessToken, handleGetPaymentMethod);
 
