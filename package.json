@@ -6,10 +6,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "maintainers": {
-	"name": "Lekan Omotayo",
-	"email": "developer@interswitchgroup.com"
+    "name": "Lekan Omotayo",
+    "email": "developer@interswitchgroup.com"
   },
- "files": [
+  "files": [
     "LICENSE",
     "History.md",
     "Readme.md",
@@ -26,5 +26,10 @@
     "jssha": "^2.2.0",
     "node-forge": "^0.6.45",
     "request": "^2.78.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.6"
   }
 }
