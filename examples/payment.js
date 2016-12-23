@@ -186,7 +186,7 @@ var sampleGetPaycode = function() {
 
             }else {
 
-                console.log("Unable to generate paycode");
+                console.log("Unable to generate paycode \n"+JSON.stringify(response));
             }
 
         }
@@ -195,10 +195,34 @@ var sampleGetPaycode = function() {
 
 };
 
+var sampleGetAccessToken = function(){
+
+    var id = getUniqueId();
+    var paymentReqRef = "ISW-SDK-PAYMENT-" + id;
+    var req = { "transactionRef": paymentReqRef , "authData": authData };
+    //console.log("\nValidate Req: " + req);
+    var obj = {
+        url: "api/v2/purchases/validations",
+        method: "POST",
+        requestData: req,
+        httpHeaders: {"Content-Type": "application/json"}
+    };
+
+
+    interswitch.getNewAccessToken(obj, function(err, access, res){
+        if(err) {
+            console.log("\n error while generating access token "+JSON.stringify(err));
+        }else {
+            console.log("\n"+JSON.stringify(res)+"\n");
+        }
+    });
+};
+
 //start: call
 
 //sampleValidation();
-//samplePurchase();
+samplePurchase();
 //sampleGetEwallet();
-sampleGetPaycode();
+//sampleGetPaycode();
+//sampleGetAccessToken();
 
