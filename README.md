@@ -11,11 +11,19 @@ var handleResponse = function(err, response, responseData)
    console.log("Response body: " + responseData);
 }
 
-var httpHeaders = {
+var httpHeaderContent = {
 	Content-Type: application/json
 }
-var requestData = "";
-interswitch.send("api/v1/.....", "POST", requestData, httpHeaders, handleResponse);
+var requestContent = "";
+
+var reqObj = {
+	url:"api/v1/.....",
+	method: "POST", 
+	requestData: requestContent,
+	httpHeaders: httpHeaderContent
+};
+
+interswitch.send(reqObj, handleResponse);
 ```
 
 ## Installation
