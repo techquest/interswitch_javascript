@@ -1,14 +1,20 @@
 {
   "name": "interswitch",
-  "version": "1.0.2",
+  "version": "2.1.2",
   "description": "Interswitch Library",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "maintainers": {
-    "name": "Lekan Omotayo",
-    "email": "developer@interswitchgroup.com"
-  },
+  "maintainers": [
+      {
+        "name": "Lekan Omotayo",
+        "email": "developer@interswitchgroup.com"
+      },
+      {
+         "name": "Ugochukwu Okeke",
+         "email": "developer@interswitchgroup.com"
+      }
+  ],
   "files": [
     "LICENSE",
     "History.md",
