@@ -5,25 +5,28 @@ var secret = ""; // Get your Client Secret from https://developer.interswitchng.
 var ENV = "SANDBOX"; // or PRODUCTION
 var interswitch = new Interswitch(clientId, secret, ENV);
 
-var handleResponse = function(err, response, responseData)
-{
-   console.log("HTTP Response Code: " + response.statusCode);
-   console.log("Response body: " + responseData);
-}
+##sample payment request
+var id = getUniqueId();
+    var paymentReqRef = "ISW-SDK-PAYMENT-" + id;
+    var req = { "transactionRef": paymentReqRef , "authData": authData };
+    //console.log("\nValidate Req: " + req);
+    var obj = {
+        url: "api/v2/purchases/validations",
+        method: "POST",
+        requestData: req,
+        httpHeaders: {"Content-Type": "application/json"}
+    };
 
-var httpHeaderContent = {
-	Content-Type: application/json
-}
-var requestContent = "";
+    //send the actual request
+    interswitch.send(obj,function(err, response, body){
+        if(err) {
+            //error/exception occured
+        }else {
+            //success
+            console.log(JSON.stringify(response));
+        }
+    });
 
-var reqObj = {
-	url:"api/v1/.....",
-	method: "POST", 
-	requestData: requestContent,
-	httpHeaders: httpHeaderContent
-};
-
-interswitch.send(reqObj, handleResponse);
 ```
 
 ## Installation
