@@ -16,11 +16,10 @@ var id = getUniqueId();
         requestData: req,
         httpHeaders: {"Content-Type": "application/json"}
     };
-
     //send the actual request
     interswitch.send(obj,function(err, response, body){
         if(err) {
-            //error/exception occured
+            //error
         }else {
             //success
             console.log(JSON.stringify(response));
